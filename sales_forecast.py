@@ -1,3 +1,5 @@
+# rcParams: contains a number of parameters, used for customizing matplotlib
+
 # import warnings
 #import itertools
 import numpy as np
@@ -5,7 +7,7 @@ import matplotlib.pyplot as plt
 # warnings.filterwarnings("ignore")
 #plt.style.use('fivethirtyeight')
 import pandas as pd
-#import statsmodels.api as sm
+import statsmodels.api as sm
 import matplotlib
 
 # Customsing MatPlotLib
@@ -40,10 +42,24 @@ furniture = furniture.sort_values('Order Date')
 
 # ***************  Indexing with Time Series  ********************
 furniture = furniture.groupby('Order Date')['Sales'].sum().reset_index()
-print("\nAfter Grouping by Order Date:\n", furniture) # Furniture sales per day
+#print("\nAfter Grouping by Order Date:\n", furniture) # Furniture sales per day
 furniture = furniture.set_index('Order Date')
 #print("furniture.index =", furniture.index)
 y = furniture['Sales'].resample('MS').mean() # avergae furniture sales of each month
 #print(y)
 #print(furniture)
-print(y['2017'])
+#print(y['2017'])
+
+# ***************  Visualizing Average Furniture Sales per month   ********************
+#y.plot(figsize=(15,6))
+#plt.show()
+
+from pylab import rcParams
+rcParams['figure.figsize'] = 18, 8
+
+decomposition = sm.tsa.seasonal_decompose(y, model='additive')
+fig = decomposition.plot()
+plt.show()
+
+# ***************  Sales Forecasting with Arima   ********************
+
